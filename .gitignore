@@ -2,3 +2,7 @@ venv/
 
 video_processing/Video/
 video_processing/Frames/
+
+hf_cache/
+
+OpenAI_cache/

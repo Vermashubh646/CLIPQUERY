@@ -5,3 +5,6 @@ torch
 Pillow 
 accelerate
 opencv-python
+moviepy
+ffmpeg
+openai-whisper
