@@ -72,7 +72,7 @@ if __name__ == "__main__":
     
     # Set the time interval (in seconds) for extracting frames
     # For example, interval=5 will save one frame every 5 seconds.
-    extraction_interval = 5  # seconds
+    extraction_interval = 2  # seconds
 
     # Call the function to start the frame extraction process
     extract_frames(os.path.join(input_video_path,filename), os.path.join(output_frames_folder,filename), interval=extraction_interval)

@@ -2,7 +2,10 @@ venv/
 
 video_processing/Video/
 video_processing/Frames/
+video_processing/Sets/
+video_processing/Audio/
 
 hf_cache/
 
 OpenAI_cache/
+Gemini_Description/.env

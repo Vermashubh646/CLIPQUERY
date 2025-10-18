@@ -8,3 +8,6 @@ opencv-python
 moviepy
 ffmpeg
 openai-whisper
+langchain_google_genai
+dotenv
+chromadb
