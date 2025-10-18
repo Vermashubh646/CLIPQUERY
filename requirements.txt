@@ -1,0 +1,7 @@
+bitsandbytes
+hf_xet
+transformers 
+torch 
+Pillow 
+accelerate
+opencv-python

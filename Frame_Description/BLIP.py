@@ -13,7 +13,7 @@ if device == "cpu":
     print("Warning: Running on CPU. This will be very slow.")
 
 processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
-model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base").to("cuda")
+model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base").to(device)
 
 image_path = input("Enter Image Path: ")
 raw_image = Image.open(image_path)
