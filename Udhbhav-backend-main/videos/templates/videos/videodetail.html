@@ -1,0 +1,117 @@
+{% extends 'layouts/blank.html' %}
+
+{% block content %}
+<body class="min-h-screen py-8 px-4 md:px-8">
+
+  <div class="container mx-auto max-w-7xl">
+    
+    <div class="mb-4">
+      <a href="{% url 'home' %}" 
+         class="inline-flex items-center text-blue-600 hover:text-blue-500 font-medium transition-colors duration-200 text-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to My Videos
+      </a>
+    </div>
+
+    <div class="flex flex-col lg:flex-row lg:gap-8">
+
+      <div class="flex-1 w-full">
+
+        <div class="w-full bg-black rounded-xl overflow-hidden shadow-xl border border-gray-200">
+          <video 
+            class="w-full max-h-[75vh] object-contain bg-black" 
+            controls 
+            autoplay 
+            playsinline 
+            preload="metadata"
+            poster="{{ video.thumbnail|default:'' }}"
+          >
+            <source src="{{ video.video_file.url }}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+
+        <div class="w-full mt-5">
+          <h1 class="text-2xl md:text-3xl font-bold mb-3 text-gray-900 tracking-tight">
+            {{ video.title }}
+          </h1>
+          
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 py-3">
+            
+            <div class="flex items-center space-x-3">
+              <img class="w-10 h-10 rounded-full bg-gray-300" src="https://via.placeholder.com/40/D1D5DB/1F2937?text={{ video.owner.username|first|upper }}" alt="avatar">
+              <div>
+                <p class="font-semibold text-gray-800">{{ video.owner.username }}</p>
+                <p class="text-gray-500 text-xs">Uploaded {{ video.created_at|date:"F j, Y" }}</p>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              
+              <button class="flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-4 py-2 rounded-full transition duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-3.125L5 18V4z" />
+                </svg>
+                <span>Bookmark</span>
+              </button>
+              <button class="flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-4 py-2 rounded-full transition duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+                </svg>
+                <span>Share</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-gray-50 rounded-xl p-4 mt-4 border border-gray-200">
+            <h3 class="font-semibold text-gray-800 mb-2">Description</h3>
+            <p class="text-gray-600 text-sm md:text-base leading-relaxed whitespace-pre-wrap">
+              {{ video.description|default:"No description available."|linebreaksbr }}
+            </p>
+          </div>
+          
+          <div class="mt-8">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Comments</h2>
+            <div class="bg-gray-50 rounded-xl p-6 border border-gray-200 text-center text-gray-500">
+              <p>Comments section placeholder.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <aside class="w-full lg:w-96 flex-shrink-0 mt-8 lg:mt-0">
+        <div class="lg:sticky lg:top-8">
+          <h2 class="text-xl font-bold text-gray-900 mb-4">Up Next</h2>
+          
+          <div class="space-y-4">
+            {% for vid in videos%}
+            <a href="{% url 'viddetail' vid.id%}" class="group flex space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+              <div class="w-40 flex-shrink-0">
+                <img class="w-full h-full object-cover rounded-md" src="{% if vid.thumbnail %}{{ vid.thumbnail.url }}{% else %}https://via.placeholder.com/320x180/E5E7EB/4B5563?text=Thumbnail{% endif %}" alt="Thumbnail">
+              </div>
+              <div>
+                <h3 class="text-sm font-semibold text-gray-800 group-hover:text-blue-600 line-clamp-2">
+                  {{vid.title}}
+                </h3>
+                <p class="text-xs text-gray-600 mt-1">{{vid.owner.username}}</p>
+                <p class="text-xs text-gray-500">{{vid.created_at}}</p>
+              </div>
+            </a>
+            {% endfor %}
+            
+            
+            
+          </div>
+        </div>
+      </aside>
+
+    </div>
+
+  </div>
+
+</body>
+{% endblock %}

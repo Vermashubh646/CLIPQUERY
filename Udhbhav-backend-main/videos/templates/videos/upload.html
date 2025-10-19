@@ -1,0 +1,191 @@
+{% extends 'layouts/blank.html' %}
+
+{% block content %}
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 md:p-8">
+
+  <div class="container mx-auto max-w-2xl">
+    
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+      
+      <div class="p-6 md:p-8 border-b border-gray-200">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Upload a New Video</h1>
+        <p class="mt-1 text-sm text-gray-500">Fill out the details below to add a new video to your collection.</p>
+      </div>
+
+      <form method="POST" enctype="multipart/form-data" class="p-6 md:p-8 space-y-6">
+        {% csrf_token %}
+
+        <div>
+          <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Video Title</label>
+          {{ form.title }}
+          {% if form.title.errors %}
+            <div class="text-red-500 text-xs mt-1">{{ form.title.errors }}</div>
+          {% endif %}
+        </div>
+        
+        <div>
+          <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          {{ form.description }}
+          {% if form.description.errors %}
+            <div class="text-red-500 text-xs mt-1">{{ form.description.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Video File</label>
+          {{ form.video_file }} 
+          <label for="{{ form.video_file.id_for_label }}" id="video-drop-zone" class="mt-1 flex cursor-pointer justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+            <div class="space-y-1 text-center">
+              <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <div class="flex text-sm text-gray-600">
+                <p class="font-medium text-blue-600 hover:text-blue-500">Upload a video</p>
+                <p class="pl-1">or drag and drop</p>
+              </div>
+              <p class="text-xs text-gray-500" id="video-file-name-display">MP4, MOV, AVI up to 500MB</p>
+            </div>
+          </label>
+          {% if form.video_file.errors %}
+            <div class="text-red-500 text-xs mt-1">{{ form.video_file.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Thumbnail (Optional)</label>
+          
+          {{ form.thumbnail }} 
+          
+          <label for="{{ form.thumbnail.id_for_label }}" id="thumb-drop-zone" class="mt-1 flex cursor-pointer justify-center items-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md relative aspect-video bg-gray-50 hover:bg-gray-100 transition">
+            
+            <div id="thumb-placeholder" class="space-y-1 text-center">
+              <svg class="mx-auto h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+              </svg>
+              <div class="flex text-sm text-gray-600">
+                <p class="font-medium text-blue-600 hover:text-blue-500">Upload a thumbnail</p>
+                <p class="pl-1">or drag and drop</p>
+              </div>
+              <p class="text-xs text-gray-500">PNG, JPG, WEBP</p>
+            </div>
+            
+            <img id="thumb-preview" src="" alt="Thumbnail preview" class="hidden absolute top-0 left-0 h-full w-full object-contain rounded-md p-2">
+            
+          </label>
+          
+          {% if form.thumbnail.errors %}
+            <div class="text-red-500 text-xs mt-1">{{ form.thumbnail.errors }}</div>
+          {% endif %}
+        </div>
+        <div class="pt-5 border-t border-gray-200">
+          <div class="flex justify-end">
+            <a href="{% url 'home' %}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              Cancel
+            </a>
+            <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              Upload Video
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+<script>
+  // --- SCRIPT UPDATED ---
+
+  // ### Video File Uploader ###
+  const videoInput = document.getElementById('{{ form.video_file.id_for_label }}');
+  const videoDropZone = document.getElementById('video-drop-zone');
+  const videoFileNameDisplay = document.getElementById('video-file-name-display');
+
+  if (videoInput) {
+      videoInput.classList.add('hidden'); // Hide the default input
+  }
+
+  if (videoInput && videoDropZone && videoFileNameDisplay) {
+    
+    videoInput.addEventListener('change', (e) => {
+      const fileName = e.target.files[0] ? e.target.files[0].name : 'MP4, MOV, AVI up to 500MB';
+      videoFileNameDisplay.textContent = fileName;
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      videoDropZone.addEventListener(eventName, (e) => {
+        e.preventDefault(); e.stopPropagation();
+        videoDropZone.classList.add('border-blue-500', 'bg-blue-50');
+      }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      videoDropZone.addEventListener(eventName, (e) => {
+        e.preventDefault(); e.stopPropagation();
+        videoDropZone.classList.remove('border-blue-500', 'bg-blue-50');
+      }, false);
+    });
+    
+    videoDropZone.addEventListener('drop', (e) => {
+        videoInput.files = e.dataTransfer.files;
+        const event = new Event('change', { bubbles: true });
+        videoInput.dispatchEvent(event);
+    });
+  }
+
+
+  // ### Thumbnail Uploader with Preview ###
+  const thumbnailInput = document.getElementById('{{ form.thumbnail.id_for_label }}');
+  const thumbDropZone = document.getElementById('thumb-drop-zone');
+  const thumbPreview = document.getElementById('thumb-preview');
+  const thumbPlaceholder = document.getElementById('thumb-placeholder');
+
+  if (thumbnailInput) {
+      thumbnailInput.classList.add('hidden'); // Hide the default input
+      thumbnailInput.setAttribute('accept', 'image/*'); // Ensure only images can be selected
+  }
+
+  if (thumbnailInput && thumbDropZone && thumbPreview && thumbPlaceholder) {
+    
+    // Function to handle file preview
+    function showThumbnailPreview(file) {
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          thumbPreview.src = e.target.result;
+          thumbPreview.classList.remove('hidden');
+          thumbPlaceholder.classList.add('hidden');
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    thumbnailInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      showThumbnailPreview(file);
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      thumbDropZone.addEventListener(eventName, (e) => {
+        e.preventDefault(); e.stopPropagation();
+        thumbDropZone.classList.add('border-blue-500', 'bg-blue-50');
+      }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      thumbDropZone.addEventListener(eventName, (e) => {
+        e.preventDefault(); e.stopPropagation();
+        thumbDropZone.classList.remove('border-blue-500', 'bg-blue-50');
+      }, false);
+    });
+    
+    thumbDropZone.addEventListener('drop', (e) => {
+        const file = e.dataTransfer.files[0];
+        thumbnailInput.files = e.dataTransfer.files; // Assign file to hidden input
+        showThumbnailPreview(file); // Show the preview
+    });
+  }
+
+</script>
+
+</body>
+{% endblock %}

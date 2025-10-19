@@ -1,0 +1,212 @@
+{% extends 'layouts/blank.html' %}
+
+{% block content %} 
+<body class="bg-gray-50">
+
+  <div class="flex min-h-screen">
+    
+    <aside class="w-64 bg-white shadow-md p-6 hidden lg:block flex-shrink-0">
+      <h2 class="text-xl font-bold text-gray-800 mb-6">Processing 🔄️</h2>
+      
+      <div class="space-y-6">
+        <div class="group">
+          <a href="#" class="block">
+            <div class="relative rounded-lg overflow-hidden aspect-video">
+              <img src="https://via.placeholder.com/300x170/3B82F6/FFFFFF?text=Featured+Vid" alt="Featured Video" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+              <span class="absolute bottom-2 left-3 text-white text-sm font-semibold">10:45</span>
+            </div>
+            <h3 class="mt-2 text-base font-semibold text-gray-700 group-hover:text-blue-600 truncate">
+              A Great Featured Video
+            </h3>
+            <p class="text-xs text-gray-500">Channel Name</p>
+          </a>
+        </div>
+        <div class="group">
+          <a href="#" class="block">
+            <div class="relative rounded-lg overflow-hidden aspect-video">
+              <img src="https://via.placeholder.com/300x170/10B981/FFFFFF?text=Must+Watch" alt="Featured Video" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+              <span class="absolute bottom-2 left-3 text-white text-sm font-semibold">08:12</span>
+            </div>
+            <h3 class="mt-2 text-base font-semibold text-gray-700 group-hover:text-blue-600 truncate">
+              Essential Tips & Tricks
+            </h3>
+            <p class="text-xs text-gray-500">Another Channel</p>
+          </a>
+        </div>
+        
+      </div>
+    </aside>
+
+    <main class="flex-1 p-6 md:p-10 overflow-x-hidden">
+      
+      <div class="flex justify-center mb-10">
+        <form method="GET" action="" class="w-full md:w-2/3 lg:w-1/2 flex items-center border border-gray-300 rounded-full shadow-sm bg-white px-5 py-2.5 focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+          <input 
+            type="text" 
+            name="q" 
+            placeholder="🔍 Search videos, topics, or channels..." 
+            value="{{ request.GET.q }}" 
+            class="flex-grow outline-none text-gray-700 placeholder-gray-500 bg-transparent text-base"
+          >
+          <button 
+            type="submit" 
+            class="ml-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105"
+          >
+            Search
+          </button>
+        </form>
+      </div>
+
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-800 mb-5">Recent Videos</h2>
+        
+        <div class="flex space-x-6 overflow-x-auto pb-4 -mb-4">
+          
+          {% for video in videos %}
+          <div class="group relative bg-white shadow-lg rounded-xl overflow-hidden transition-all duration-300 border border-gray-100 w-80 flex-shrink-0 hover:shadow-xl">
+            
+            <a href="{% url 'viddetail' video.id %}" class="block relative">
+              <video 
+                class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105" 
+                poster="{% if video.thumbnail %}{{ video.thumbnail.url }}{% else %}https://via.placeholder.com/320x180/E5E7EB/4B5563?text=Thumbnail{% endif %}" 
+                muted 
+                loop 
+                playsinline
+                onmouseover="this.play()" 
+                onmouseout="this.pause(); this.currentTime=0;"
+              >
+                <source src="{{ video.video_file.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div class="bg-white/80 backdrop-blur-sm rounded-full p-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+
+            <div class="p-4 flex items-start space-x-3">
+              <img src="{{video.owner.profile.image.url}}" alt="Avatar" class="w-10 h-10 rounded-full flex-shrink-0 mt-1">
+              <div>
+                <h3 class="text-lg font-semibold text-gray-800 group-hover:text-blue-600 transition-colors duration-300 truncate">
+                  <a href="{% url 'viddetail' video.id %}">{{ video.title }}</a>
+                </h3>
+                <p class="text-sm text-gray-600 hover:text-gray-900">
+                  {{ video.owner.username|default:"Uploader Name" }}
+                </p>
+                <p class="text-xs text-gray-500 mt-1">
+                  No Views &bull; {{ video.created_at|timesince }} ago
+                </p>
+              </div>
+            </div>
+
+          </div>
+          {% endfor %}
+          
+          {% if not videos %}
+            <p class="text-gray-500">No recent videos found.</p>
+          {% endif %}
+
+        </div>
+      </section>
+
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-800 mb-5">Your Bookmarks 🔖</h2>
+        <div class="flex space-x-6 overflow-x-auto pb-4 -mb-4">
+          
+          {% for video in bookmarked_videos %}
+          <div class="group relative bg-white shadow-lg rounded-xl overflow-hidden transition-all duration-300 border border-gray-100 w-80 flex-shrink-0 hover:shadow-xl">
+            <a href="{% url 'viddetail' video.id %}" class="block relative">
+              <video class="w-full h-48 object-cover" poster="{% if video.thumbnail %}{{ video.thumbnail.url }}{% else %}https://via.placeholder.com/320x180/E5E7EB/4B5563?text=Thumbnail{% endif %}" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;">
+                <source src="{{ video.video_file.url }}" type="video/mp4">
+              </video>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            </a>
+            <div class="p-4 flex items-start space-x-3">
+              <img src="{{ video.uploader.avatar.url|default:'https://via.placeholder.com/40x40/9CA3AF/FFFFFF?text=AV' }}" alt="Avatar" class="w-10 h-10 rounded-full flex-shrink-0 mt-1">
+              <div>
+                <h3 class="text-lg font-semibold text-gray-800 truncate"><a href="{% url 'viddetail' video.id %}">{{ video.title }}</a></h3>
+                <p class="text-sm text-gray-600">{{ video.uploader.name|default:"Uploader Name" }}</p>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+            <p class="text-gray-500">You haven't bookmarked any videos yet.</p>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-800 mb-5">Continue Watching ⏯️</h2>
+        <div class="flex space-x-6 overflow-x-auto pb-4 -mb-4">
+          
+          {% for ts in timestamps %}
+          <div class="group relative bg-white shadow-lg rounded-xl overflow-hidden transition-all duration-300 border border-gray-100 w-80 flex-shrink-0 hover:shadow-xl">
+            <a href="{% url 'viddetail' ts.video.id %}?t={{ ts.time_seconds }}" class="block relative">
+              <video class="w-full h-48 object-cover" poster="{{ ts.video.thumbnail.url }}" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;">
+                <source src="{{ ts.video.video_file.url }}" type="video/mp4">
+              </video>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            </a>
+            <div class="absolute bottom-0 left-0 w-full h-1.5 bg-gray-300">
+              <div class="h-1.5 bg-blue-600" style="width: {{ ts.progress_percent }}%;"></div>
+            </div>
+            
+            <div class="p-4">
+              <h3 class="text-lg font-semibold text-gray-800 truncate"><a href="{% url 'viddetail' ts.video.id %}?t={{ ts.time_seconds }}">{{ ts.video.title }}</a></h3>
+              <p class="text-sm text-gray-600">{{ ts.video.uploader.name|default:"Uploader Name" }}</p>
+            </div>
+          </div>
+          {% empty %}
+            <p class="text-gray-500">No videos to continue watching.</p>
+          {% endfor %}
+        </div>
+      </section>
+
+     <section class="mb-12">
+    <h2 class="text-2xl font-bold text-gray-800 mb-5">Featured Profiles 👥</h2>
+    
+    <div class="flex space-x-6 overflow-x-auto pb-4 -mb-4">
+      
+      {% for profile in profiles %}
+      
+      <a href="{% url 'userprofile' profile.user.username %}" 
+         class="group bg-white shadow-lg rounded-2xl overflow-hidden border border-gray-100 w-48 flex-shrink-0 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+        
+        <div class="p-6 flex flex-col items-center text-center">
+          
+          <img 
+            src="{{ profile.image.url|default:'https://via.placeholder.com/128/9CA3AF/FFFFFF?text=AV' }}" 
+            alt="{{ profile.username }}'s profile" 
+            class="w-24 h-24 rounded-full object-cover border-4 border-gray-200 group-hover:border-blue-500 transition-colors duration-300"
+          >
+          
+          <h3 class="text-lg font-semibold text-gray-800 mt-4 group-hover:text-blue-600 transition-colors truncate w-full">
+            {{ profile.username }}
+          </h3>
+          
+          <p class="text-sm text-gray-500 mt-1">
+            {{ profile.user.email}} Followers
+          </p>
+
+        </div>
+      </a>
+      
+      {% empty %}
+        <p class="text-gray-500">No profiles to display right now.</p>
+      {% endfor %}
+
+    </div>
+  </section>
+
+    </main>
+
+  </div>
+
+</body>
+{% endblock %}

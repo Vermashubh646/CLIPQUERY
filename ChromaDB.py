@@ -4,14 +4,15 @@ import sys
 import json
 import chromadb
 import re
+from JSON_embed.JSON_Embed import load_embedder,generate_embedding_from_file,serialize_scene_to_text
 
-def populate_chroma_db(embedding, collection, SETS_BASE_FOLDER, VIDEO_FILENAME,CHROMA_COLLECTION_NAME,start_time,end_time,serialized_text,summary):
+def populate_chroma_db(embedder, collection, SETS_BASE_FOLDER, VIDEO_FILENAME,CHROMA_COLLECTION_NAME):
     """
     Finds all scene summaries, generates embeddings, and adds them to ChromaDB.
     """
     
     # Find all the 'summary_data.json' files
-    json_files = sorted(glob.glob(os.path.join(SETS_BASE_FOLDER, "set_*/summary_data.json")))
+    json_files = sorted(glob.glob(os.path.join(SETS_BASE_FOLDER,VIDEO_FILENAME, "set_*/summary_data.json")))
     
     if not json_files:
         print(f"Error: No 'summary_data.json' files found in {SETS_BASE_FOLDER}")
@@ -42,8 +43,15 @@ def populate_chroma_db(embedding, collection, SETS_BASE_FOLDER, VIDEO_FILENAME,C
             with open(file_path, 'r') as f:
                 scene_data = json.load(f)
 
+            embedding = generate_embedding_from_file(embedder,file_path)
+
+            serialized_text = serialize_scene_to_text(scene_data)
+                
             
-        
+            start_time = scene_data.get("start_time", 0.0)
+            end_time = scene_data.get("end_time", 0.0)
+            summary = scene_data.get("scene_summary", "")
+            
 
             # 3. Create Metadata (This is where you store timestamps!)
             metadata = {
